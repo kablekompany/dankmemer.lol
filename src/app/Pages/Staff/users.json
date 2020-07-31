@@ -21,8 +21,21 @@
   ],
   "Server Management": [
     {
+      "name": "KableKompany",
+      "about": "Tapestry technician with superfluous vocabulary ㉿",
+      "social": {
+        "Website": "https://kablekompany.com/",
+        "Twitter": "https://twitter.com/kablekompany",
+        "GitHub": "https://github.com/kablekompany",
+        "Discord": "https://kable.lol/discord",
+        "Spotify": "https://open.spotify.com/user/5yfympp9875mp4p0w8rtxb63z?si=FgPPHLKhRbaghmgozkzKnw",
+        "Reddit": "https://reddit.com/u/kablekompany",
+        "GitLab": "https://gitlab.com/kablekompany"
+      }
+    },
+    {
       "name": "Dauntless",
-      "about": "dauntless sucks",
+      "about": "new bio for staff page pls, anything you want i literally have no ideas and it cant be blank",
       "social": {
         "Discord": "https://discord.gg/7kna4Pz",
         "GitHub": "https://github.com/Dauntless7",
@@ -37,7 +50,8 @@
         "Discord": "https://discord.gg/fM5YVkk",
         "Reddit": "https://www.reddit.com/user/gotohellwhydontya",
         "Twitch": "https://twitch.tv/expectationsblair",
-        "Insta": "https://instagram.com/gotohellwhydontya"
+        "Insta": "https://instagram.com/gotohellwhydontya",
+        "Twitter": "https://twitter.com/blaircxx"
       }
     },
     {
@@ -47,17 +61,6 @@
         "Discord": "https://discord.gg/JT5aUYQ",
         "Reddit": "https://www.reddit.com/user/tintin9999",
         "GitHub": "https://github.com/tintin9999"
-      }
-    },
-    {
-      "name": "Kable Kompany",
-      "about": "Life keys: Superfluous vocabulary with accommodating fart jokes. ",
-      "social": {
-        "Website": "https://kablekompany.com/",
-        "Twitter": "https://twitter.com/kablekompany",
-        "GitHub": "https://github.com/kablekompany",
-        "Insta": "https://instagram.com/kablekompany",
-        "Discord": "https://kable.lol/discord"
       }
     }
   ],
@@ -72,7 +75,7 @@
     },
     {
       "name": "Aiphey",
-      "about": "First I drink the coffee. Then I do the things.",
+      "about": "i spent 33 minutes thinking of this bio and it’s 2:37 am right now, goodnight",
       "social": {
         "Discord": "https://discord.gg/Y4Xu3WN",
         "Spotify": "https://open.spotify.com/user/409mdtf1dzhrdzg501y92yzd9",
@@ -96,7 +99,7 @@
       "name": "Aerielle",
       "about": "Pretty short, Australian and will kick your ass if you dm me <3",
       "social": {
-        "Discord": "https://discord.gg/bAfT8QN",
+        "Discord": "https://discord.gg/jHbQrpy",
         "Reddit": "https://www.reddit.com/user/imaerielle",
         "GitHub": "https://github.com/Aeriellee",
         "Spotify": "https://open.spotify.com/user/axrixllx"
@@ -112,11 +115,9 @@
       }
     },
     {
-      "name": "bernice swx",
-      "about": "im practicing",
-      "social": {
-        "Insta": "https://www.instagram.com/bern.swx"
-      }
+      "name": "neff",
+      "about": " i spent 5 years in college just to be a volunteer support helper on a discord bot",
+      "social": {}
     },
     {
       "name": "xfastx",
@@ -127,7 +128,8 @@
       "name": "samantha",
       "about": "ur cute",
       "social": {
-        "Insta": "https://www.instagram.com/sam.anthaaa.l/"
+        "Insta": "https://www.instagram.com/sam.anthaaa.l/",
+        "Discord": "https://discord.gg/Avwycyq"
       }
     },
     {
@@ -139,8 +141,10 @@
     },
     {
       "name": "Terrarian",
-      "about": "When life gets you down, the bois on discord got your back (most of the time).",
-      "social": {}
+      "about": "I can't believe it's not butter (because who doesn't like butter??)",
+      "social": {
+        "Discord": " https://discord.gg/MGrtccp"
+      }
     },
     {
       "name": "Dylan",
@@ -177,11 +181,15 @@
       }
     },
     {
-      "name": "Abaddon",
+      "name": "Erebus",
       "about": "You think darkness to be your ally...the shadows betray you, because they serve me",
       "social": {
         "Spotify": "https://open.spotify.com/user/c1b8juerb2w1wcx9mf67wldvu?si=IQDA2WXxQ26rf30MVP_bQA",
-        "YouTube": "https://youtu.be/dQw4w9WgXcQ"
+        "YouTube": "https://youtu.be/dQw4w9WgXcQ",
+        "Twitch": "https://www.twitch.tv/erebosofshadow",
+        "Twitter": "https://twitter.com/ErebosofShadows",
+        "Discord": "https://discord.gg/NA3qUqs",
+        "Reddit": "https://www.reddit.com/user/ErebusofShadows"
       }
     },
     {
@@ -191,6 +199,18 @@
         "Discord": "https://discord.gg/NXAc5xs",
         "Twitter": "https://twitter.com/DuckySoren"
       }
+    },
+    {
+      "name": "Yeng",
+      "about": "If you are reading this, you are reading.",
+      "social": {
+        "Reddit": "https://www.reddit.com/u/Yeng"
+      }
+    },
+    {
+      "name": "Shes",
+      "about": "If you see it, tropa na tayo",
+      "social": {}
     }
   ],
   "Honorable Mentions": [
