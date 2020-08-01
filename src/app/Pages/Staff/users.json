@@ -117,7 +117,10 @@
     {
       "name": "neff",
       "about": " i spent 5 years in college just to be a volunteer support helper on a discord bot",
-      "social": {}
+      "social": {
+        "Twitch": "https://www.twitch.tv/neffrs"
+        "YouTube": "https://www.youtube.com/channel/UCpGSeqkcKwfvLy4h2rbHjag"
+      }
     },
     {
       "name": "xfastx",
