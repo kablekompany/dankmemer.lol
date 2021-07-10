@@ -1,7 +1,7 @@
 // Handle NODE_ENV properly
-process.env.NODE_ENV = process.argv.includes('--development')
-  ? 'development'
-  : 'production';
+process.env.NODE_ENV = process.argv.includes('--development') ?
+  'development' :
+  'production';
 
 const express = require('express');
 const bodyParser = require('body-parser');
@@ -43,9 +43,13 @@ require('./util/db.js')().then(db => {
     name: 'DankMemerHasABigSteamer',
     resave: false,
     saveUninitialized: true,
-    store: new MongoStore({ db }),
+    rolling: true,
+    store: new MongoStore({
+      db
+    }),
     cookie: {
-      secure: process.env.NODE_ENV === 'production'
+      secure: process.env.NODE_ENV === 'production',
+      maxAge: 2628000
     }
   }));
 

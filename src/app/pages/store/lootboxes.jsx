@@ -33,10 +33,8 @@ const box = {
 function Loot(props) {
 	const boxValue = useRef();
 	const [boxes, setBoxes] = useState([box]);
-	const [constants, setConstants] = useState(null);
 	const [activeBox, setActiveBox] = useState(box);
 	const [country, setCountry] = useState("");
-	const [bannedCountry, setBannedCountry] = useState(false);
 	const [bannedUser, setBannedUser] = useState(false);
 	const [agreedTOS, setAgreedTOS] = useState(false);
 	const [finishedPayment, setFinishedPayment] = useState(false);
@@ -52,6 +50,14 @@ function Loot(props) {
 	const [currentPeepo, setCurrentPeepo] = useState(0);
 	const [showPeepos, setShowPeepos] = useState(false);
 
+	const [discountCountdown, setDiscountCountdown] = useState("");
+
+	const [constants, setConstants] = useState({
+		"MINIMUM_PURCHASE_VALUE": 3,
+		"MINIMUM_DISCOUNT_VALUE": 20,
+		"FLAT_DISCOUNT_PERCENTAGE": 10
+	})
+
 	useEffect(() => {
 		window.scroll(0,0)
 		axios.all([
@@ -61,7 +67,6 @@ function Loot(props) {
 		]).then(axios.spread(async ({ data: {boxes, Constants} }, { data: { country }}, req3) => {
 			setBoxes(boxes);
 			setActiveBox(boxes[1])
-			setConstants(Constants);
 			setCountry(country);
 			setBannedUser(req3.status === 403);
 		})).catch(e => {
@@ -104,6 +109,18 @@ function Loot(props) {
 		}
 	}, [isRee]);
 
+	useEffect(() => {
+		if(!props.discount) return;
+		let difference = props.discount.expiry - Date.now();
+		let expiry = parseTime(props.discount.expiry - Date.now());
+		setDiscountCountdown(`${expiry.hours.toString().length === 1 ? '0' + expiry.hours : expiry.hours}:${expiry.minutes.toString().length === 1 ? '0' + expiry.minutes : expiry.minutes}:${expiry.seconds.toString().length === 1 ? '0' + expiry.seconds : expiry.seconds}`)
+		setInterval(() => {
+			difference = difference - 1000
+			expiry = parseTime(difference);
+			setDiscountCountdown(`${expiry.hours.toString().length === 1 ? '0' + expiry.hours : expiry.hours}:${expiry.minutes.toString().length === 1 ? '0' + expiry.minutes : expiry.minutes}:${expiry.seconds.toString().length === 1 ? '0' + expiry.seconds : expiry.seconds}`)
+		}, 1000);
+	}, [props.discount]);
+
 	const verifiedAge = () => {
 		localStorage.setItem("verified_age", "verified");
 		setCheckAge(false);
@@ -135,7 +152,7 @@ function Loot(props) {
     const getDiscountPercent = () => {
         const res = {};
         const subtotal = getSubtotal(true);
-        let discountPercent = 0;
+        let discountPercent = props.discount && props.discount.percent * 100;
         const hypothetical = (subtotal * ((100 - (discountPercent + constants.FLAT_DISCOUNT_PERCENTAGE)) / 100));
         if (hypothetical >= constants.MINIMUM_DISCOUNT_VALUE) {
             discountPercent += constants.FLAT_DISCOUNT_PERCENTAGE;
@@ -189,6 +206,26 @@ function Loot(props) {
 					<h1 id="store-header-title">Dank Memer Store</h1>
 					<p id="store-header-message">Welcome to the lootbox shop! Here you can find a variety of different purchasable items that grant you a chance of winning something special!</p>
 				</div>
+				{props.discount ? 
+					<div id="store-discount">
+						<div id="store-discount-content">
+							<h1 id="store-discount-content-title">Flash Sale!</h1>
+							<h3>Sale ends in: {discountCountdown}</h3>
+							<p id="store-discount-content-message">Pick up your boxes with a <b>{props.discount.percent * 100}% discount</b> during this limited time event!</p>
+						</div>
+						<svg id="store-discount-svg" height="100%" width="100%">
+							<circle cx="523" cy="39" r="100.5" />
+							<circle cx="931.5" cy="38.5" r="50.5" />
+							<circle cx="381.5" cy="-0.5" r="26.5" />
+							<circle cx="662.7" cy="116.8" r="39.3" />
+							<circle cx="1014" cy="11" r="16" />
+							<circle cx="720.5" cy="0.5" r="26.5" />
+							<circle cx="1221" cy="85" r="46" />
+							<circle cx="247" cy="98" r="13" />
+							<circle cx="147" cy="8" r="50" />
+						</svg>
+					</div>
+				: ''}
 				<div id="store-boxes">
 					{boxes.map((box, i) => (
 						<div key={i} className={activeBox.id === i ? "store-box active" : "store-box"} onClick={() => {
@@ -255,7 +292,7 @@ function Loot(props) {
 					</div>
 					<div id="store-summary">
 						<h2 id="store-summary-title">Order summary</h2>
-						<p id="store-summary-message">All orders are processed via PayPal and will operate using the United States Dollar. Each order has a minimum charge amount of ${constants && constants.MINIMUM_PURCHASE_VALUE} where you will need to fulfill this amount to continue. Orders over ${constants && constants.MINIMUM_DISCOUNT_VALUE} will receive a {constants && constants.FLAT_DISCOUNT_PERCENTAGE}% discount.</p>
+						<p id="store-summary-message">All orders are processed via PayPal and will operate using the United States Dollar. Each order has a minimum charge amount of ${constants.MINIMUM_PURCHASE_VALUE} where you will need to fulfill this amount to continue. Orders over ${constants.MINIMUM_DISCOUNT_VALUE} will receive a {constants.FLAT_DISCOUNT_PERCENTAGE}% discount.</p>
 						<table id="store-summary-items">
 							<tbody>
 								<tr>
@@ -268,12 +305,14 @@ function Loot(props) {
 								</tr>
 								<tr>
 									<td>Discount</td>
-									<td>{(Math.round(((boxCount * activeBox.price) + Number.EPSILON) * 100) / 100) > 20 ? <p id="store-summary-sale-amount">10% (${((boxCount * activeBox.price) / 10).toFixed(2)})</p> : '0%'}</td>
+									<td>{getDiscountPercent().discountPercent || 0}% (${getDiscount()})</td>
 								</tr>
 								<tr><td/><td/></tr>
 								<tr>
 									<td></td>
-									<td id="store-summary-total">Total: ${(Math.round(((boxCount * activeBox.price) + Number.EPSILON) * 100) / 100) < 20 ? Math.round((parseFloat(constants ? (getDiscountedSubtotal(true) * 0.0675).toFixed(2) : 0) + parseFloat(boxCount * activeBox.price) + Number.EPSILON) * 100) / 100 : ((Math.round((parseFloat(constants ? (getDiscountedSubtotal(true) * 0.0675).toFixed(2) : 0) + parseFloat(boxCount * activeBox.price) + Number.EPSILON) * 100) / 100) - ((boxCount * activeBox.price) / 10).toFixed(2)).toFixed(2)}</td>
+									<td id="store-summary-total">Total: ${(Math.round(((boxCount * activeBox.price) + Number.EPSILON) * 100) / 100) < 20 ? 
+									Math.round((parseFloat(constants ? (getDiscountedSubtotal(true) * 0.0675).toFixed(2) : 0) + parseFloat(boxCount * activeBox.price) + Number.EPSILON) * 100) / 100 :
+									((Math.round((parseFloat(constants ? (getDiscountedSubtotal(true) * 0.0675).toFixed(2) : 0) + parseFloat(boxCount * activeBox.price) + Number.EPSILON) * 100) / 100) - ((boxCount * activeBox.price) * (getDiscountPercent().discountPercent / 100)).toFixed(2)).toFixed(2)}</td>
 								</tr>
 							</tbody>
 						</table>
@@ -303,13 +342,13 @@ function Loot(props) {
 								<input name="user-gift" type="number" onChange={(e) => setGiftRecipient(e.target.value)}/>
 								<label htmlFor="user-gift">Gift recipient's user ID.</label>
 							</div> : ''}
-							{constants && (Math.round(((boxCount * activeBox.price) + Number.EPSILON) * 100) / 100 < constants.MINIMUM_PURCHASE_VALUE) ?
+							{(Math.round(((boxCount * activeBox.price) + Number.EPSILON) * 100) / 100 < constants.MINIMUM_PURCHASE_VALUE) ?
 								<div id="checkout-error">
 									<p id="checkout-error-notice">Insufficient purchase amount.</p>
-									<p id="checkout-error-help">Your order does not meet the minimum required value of ${constants && constants.MINIMUM_PURCHASE_VALUE}.</p>
+									<p id="checkout-error-help">Your order does not meet the minimum required value of ${constants.MINIMUM_PURCHASE_VALUE}.</p>
 								</div>
 							: ''}
-							{constants && (Math.round(((boxCount * activeBox.price) + Number.EPSILON) * 100) / 100 >= constants.MINIMUM_PURCHASE_VALUE) && isGift && !validGift ? 
+							{(Math.round(((boxCount * activeBox.price) + Number.EPSILON) * 100) / 100 >= constants.MINIMUM_PURCHASE_VALUE) && isGift && !validGift ? 
 								<div id="checkout-error">
 									<p id="checkout-error-notice">The ID provided is invalid.</p>
 									<p id="checkout-error-help">If you are unsure, you can find how to get an user ID <a href="https://support.discord.com/hc/en-us/articles/206346498-Where-can-I-find-my-User-Server-Message-ID" rel="noreferrer noopener" target="_blank">here</a>.</p>
@@ -317,7 +356,7 @@ function Loot(props) {
 							: ''}
 						</div>
 						{isGift ?
-							validGift && agreedTOS && props.login.loggedIn && constants && activeBox.price !== 0 && (Math.round(((boxCount * activeBox.price) + Number.EPSILON) * 100) / 100 >= constants.MINIMUM_PURCHASE_VALUE) ?
+							validGift && agreedTOS && props.login.loggedIn && activeBox.price !== 0 && (Math.round(((boxCount * activeBox.price) + Number.EPSILON) * 100) / 100 >= constants.MINIMUM_PURCHASE_VALUE) ?
 							<div id="store-summary-actions">
 							<PaypalButton
 								activeBox={activeBox}
@@ -325,7 +364,7 @@ function Loot(props) {
 								giftState={giftRecipient}
 								login={props.login}
 								Constants={constants}
-								discount={0}
+								discount={props.discount && props.discount.percent * 100 || 0}
 								setFinishState={finishState}
 							/>
 							<p id="store-summary-actions-message">You are still able to use your credit/debit card without signing in through PayPal. Scroll down in the popup window.</p>
@@ -336,7 +375,7 @@ function Loot(props) {
 								<p id="store-summary-actions-message">Before you purchase your <span className="text-highlight">shiny</span> new boxes you need to login to Discord.</p>
 							</div>			
 						: '' : ''}
-						{!isGift && agreedTOS && props.login.loggedIn && constants && activeBox.price !== 0 && (Math.round(((boxCount * activeBox.price) + Number.EPSILON) * 100) / 100 >= constants.MINIMUM_PURCHASE_VALUE) ?
+						{!isGift && agreedTOS && props.login.loggedIn && activeBox.price !== 0 && (Math.round(((boxCount * activeBox.price) + Number.EPSILON) * 100) / 100 >= constants.MINIMUM_PURCHASE_VALUE) ?
 							<div id="store-summary-actions">
 								<PaypalButton
 									activeBox={activeBox}
@@ -344,7 +383,7 @@ function Loot(props) {
 									giftState={null}
 									login={props.login}
 									Constants={constants}
-									discount={0}
+									discount={props.discount && props.discount.percent * 100 || 0}
 									setFinishState={finishState}
 								/>
 								<p id="store-summary-actions-message">You are still able to use your credit/debit card without signing in through PayPal. Scroll down in the popup window.</p>

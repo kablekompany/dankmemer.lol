@@ -1,20 +1,40 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import { sanitize } from 'dompurify';
 import 'assets/styles/components/staffCard.scss';
 import * as socials from '../pages/singular/util/socials.js';
+import * as axios from 'axios';
 import images from '../pages/singular/util/images.js';
+import fallbackAvatar from 'assets/img/staff/fallback.gif';
 const UWU = new Audio(`/static/audio/uwu.wav`);
 const playAudio = () => UWU.play();
 
 export default function StaffCard({ name, avatar, social, about }) {
+
+	const [_avatar, _setAvatar] = useState(avatar || images[name.toLowerCase().replace(/ /g, '--')]);
+	const [_about, _setAbout] = useState(about)
+
+ 	useEffect(() => {
+		axios(_avatar).catch(e => {
+			_setAvatar(fallbackAvatar);
+		});
+	}, []);
+
+	useEffect(() => {
+		_setAbout(sanitize(about, { USE_PROFILES: { html: false } }));
+	}, [about])
+	
+
 	return (
   		<div className="staff-card">
     		<div className="staff-card-details">
-      			<img className="staff-card-details-picture" src={avatar || images[name.toLowerCase().replace(/ /g, '-')]} alt={`${name}'s avatar`} onClick={() => {
-          			name === 'Melmsie' ? playAudio() : console.log('Go click Mel\'s avatar')
-        		}} />
+				<img 
+					className="staff-card-details-picture"
+					src={_avatar}
+					onClick={() => { name === 'Melmsie' ? playAudio() : console.log('Go click Mel\'s avatar') }}
+				/>
 				<p className="staff-card-details-name">{name}</p>
       			<div className="staff-card-details-about-container">
-				  <p className={about.length > 120 ? "staff-card-details-about scroll" : "staff-card-details-about"} dangerouslySetInnerHTML={{ __html: about }} />	
+				  <p className={_about.length > 120 ? "staff-card-details-about v-scroll" : "staff-card-details-about"} dangerouslySetInnerHTML={{ __html: _about }} />	
 				</div>
 			</div>
     		<div className="staff-card-socials">
